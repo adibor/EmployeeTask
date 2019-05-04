@@ -1,9 +1,6 @@
-import Employee
-
-
 class Solution:
 
-    def get_importance(self, employees, id):
+    def get_importance_helper(self, employees, id, calculated=[]):
         found_employee_flag = 0
         for emp in employees:
             if emp.id == id:
@@ -12,12 +9,25 @@ class Solution:
         if found_employee_flag == 0:
             raise TypeError("id not in employees list")
         if len(employee.subordinates) == 0:
-            return employee.importance
+            return [employee.importance, calculated]
         else:
             sum = 0
             for sub in employee.subordinates:
-                sum += self.get_importance(employees, sub)
-            return employee.importance + sum
+                if sub not in calculated:
+                    calculated.append(sub)
+                    sum += self.get_importance_helper(employees, sub, calculated)[0]
+            return [employee.importance + sum, calculated]
+
+    def get_importance(self, employees, id):
+        return self.get_importance_helper(employees, id, calculated=[])[0]
+
+
+
+
+
+
+
+
 
 
 
